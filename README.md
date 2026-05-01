@@ -3,17 +3,64 @@
 ## Prasyarat
 
 - Python 3
-- MariaDB
+- MariaDB (opsional, bisa menggunakan SQLite untuk testing)
+- Git
+
+## Setup Proyek di Komputer Baru (Clone)
+
+### 1. Clone Repository dari GitHub
+
+```bash
+git clone https://github.com/USERNAME/recorderd.git
+cd recorderd
+```
+
+(Ganti `USERNAME` dengan username GitHub Anda)
+
+### 2. Buat Virtual Environment
+
+Untuk Fish shell:
+```bash
+python3 -m venv venv
+source venv/bin/activate.fish
+```
+
+Untuk Bash:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Untuk Windows (PowerShell):
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. (Opsional) Setup Database Environment
+
+Jika Anda ingin menggunakan MariaDB, buat file `.env` di root folder:
+
+```
+DATABASE_URL=mysql+aiomysql://root:password_anda@localhost:3306/recorderd
+```
+
+Atau biarkan default SQLite untuk development/testing.
+
+---
 
 ## Cara Menjalankan Aplikasi
 
-1. **Buka Terminal & Masuk ke Folder Proyek:**
+Setelah setup selesai, ikuti langkah berikut untuk menjalankan aplikasi:
 
-   ```bash
-   cd /home/alwizen/Workspace/py/recorderd
-   ```
-
-2. **Aktifkan Virtual Environment:**
+1. **Aktifkan Virtual Environment:**
    Jika Anda menggunakan fish shell:
 
    ```bash
@@ -26,7 +73,7 @@
    source venv/bin/activate
    ```
 
-3. **Konfigurasi Database (Penting):**
+2. **Konfigurasi Database (Penting):**
    Secara default, saat ini program disetting untuk menggunakan **SQLite** (di file `recorderd.db`) agar langsung bisa dites.
    Jika Anda ingin menggunakan **MariaDB** untuk production, buka file `config.py` lalu ubah URL database Anda menjadi seperti ini:
 
@@ -34,13 +81,13 @@
    DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+aiomysql://root:password_anda@localhost:3306/recorderd")
    ```
 
-4. **Jalankan Server (Backend):**
+3. **Jalankan Server (Backend):**
 
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000
    ```
 
-5. **Akses Dashboard (Di Komputer Client / Windows):**
+4. **Akses Dashboard (Di Komputer Client / Windows):**
    Buka Google Chrome lalu akses ke IP Server Backend. Jika di testing lokal, buka:
    👉 `http://localhost:8000`
 
