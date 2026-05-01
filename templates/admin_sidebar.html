@@ -1,0 +1,66 @@
+<aside id="admin-sidebar" class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col absolute inset-y-0 left-0 z-50 transform transition-transform duration-300 -translate-x-full sm:relative sm:translate-x-0 h-full shadow-2xl">
+    <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800">
+        <div class="flex items-center w-full justify-center">
+            <img src="/static/img/logo.svg" alt="Solu8i Logo" class="w-full max-w-[190px] h-auto">
+        </div>
+        <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-1 md:hidden ml-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <nav class="flex-1 p-4 space-y-2">
+        <a href="/dashboard" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            Dashboard
+        </a>
+        <a href="/videos_page" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            Videos
+        </a>
+        <a href="/users_page" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            Users
+        </a>
+        <a href="/devices_page" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            Devices
+        </a>
+        <div class="h-px bg-slate-700 my-4"></div>
+        <a href="/recorder" class="flex items-center gap-3 px-4 py-3 rounded-lg text-emerald-400 hover:bg-emerald-900/30 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Go to Recorder
+        </a>
+    </nav>
+    <div class="p-4 border-t border-slate-700/50">
+        <p class="text-xs text-center text-slate-500 font-medium tracking-wide">
+            Made with <span class="text-red-500">♥</span> Jaga Paket
+        </p>
+    </div>
+</aside>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const path = window.location.pathname;
+        const links = document.querySelectorAll('.admin-nav-link');
+        links.forEach(l => {
+            if(l.getAttribute('href') === path) {
+                l.classList.remove('text-slate-400', 'hover:bg-slate-800');
+                l.classList.add('bg-blue-600', 'font-medium', 'text-white', 'shadow');
+            }
+        });
+    });
+
+    function toggleSidebar() {
+        const sb = document.getElementById('admin-sidebar');
+        if(!sb) return;
+        if (sb.classList.contains('-translate-x-full')) {
+            sb.classList.remove('-translate-x-full');
+            sb.classList.replace('sm:translate-x-0', 'translate-x-0'); 
+        } else {
+            sb.classList.add('-translate-x-full');
+            if(sb.classList.contains('sm:translate-x-0')) {
+                sb.classList.remove('sm:translate-x-0');
+            } else {
+                sb.classList.add('sm:translate-x-0');
+            }
+        }
+    }
+</script>

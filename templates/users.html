@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="h-full flex flex-col">
+    {% set page_title = 'User Management' %}
+    {% include 'admin_navbar.html' %}
+
+    <div class="flex flex-1 overflow-hidden relative">
+        {% include "admin_sidebar.html" %}
+        
+        <div class="flex-1 bg-slate-900 p-8 overflow-y-auto">
+            <div class="flex gap-6 max-w-7xl mx-auto w-full flex-col md:flex-row">
+                <!-- Main View -->
+                <div class="flex-[3]">
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden mb-8">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="px-6 py-4">ID</th>
+                            <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Username</th>
+                            <th class="px-6 py-4">Role</th>
+                            <!-- <th class="px-6 py-4">Device ID</th> -->
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody" class="divide-y divide-slate-700/50">
+                        <!-- Populated randomly -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Create Form -->
+        <div class="flex-[1] bg-slate-800 border border-slate-700 rounded-xl p-6 h-fit shadow-xl">
+            <h3 id="form-title" class="text-lg font-bold text-white mb-4">Add User</h3>
+            <form onsubmit="saveUser(event)" id="user-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Name</label>
+                    <input type="text" id="add-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Username</label>
+                    <input type="text" id="add-username" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Password</label>
+                    <input type="password" id="add-password" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Role</label>
+                    <select id="add-role" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
+                        <option value="PACKING_STAFF">PACKING STAFF</option>
+                        <option value="SUPER_ADMIN">SUPER ADMIN</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Assigned Device ID (Optional)</label>
+                    <input type="number" id="add-device" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
+                </div>
+                <div class="flex flex-col gap-2 mt-4">
+                    <button type="submit" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition-colors">
+                        Create User
+                    </button>
+                    <button type="button" onclick="cancelEdit()" id="cancel-btn" class="w-full hidden bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 rounded transition-colors">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = localStorage.getItem('username');
+        if(!username || localStorage.getItem('user_role') !== 'SUPER_ADMIN') {
+            window.location.href = '/'; return;
+        }
+        document.getElementById('username-display').textContent = username;
+        loadUsers();
+    });
+
+    async function loadUsers() {
+        try {
+            const res = await fetch('/api/users', { headers: App.authHeader() });
+            const data = await res.json();
+            
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = '';
+            
+            data.forEach(u => {
+                const safePayload = encodeURIComponent(JSON.stringify(u));
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30">
+                        <td class="px-6 py-4">${u.id}</td>
+                        <td class="px-6 py-4 font-medium text-white">${u.name}</td>
+                        <td class="px-6 py-4">${u.username}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded text-xs font-bold ${u.role === 'SUPER_ADMIN' ? 'bg-slate-700 text-slate-300' : 'bg-slate-700 text-slate-300'}">${u.role}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="editUser('${safePayload}')" class="text-blue-400 hover:text-blue-300 font-medium text-sm mr-3">Edit</button>
+                            <button onclick="deleteUser(${u.id})" class="text-red-400 hover:text-red-300 font-medium text-sm">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch(e) {
+            App.showToast("Failed to load users", "error");
+        }
+    }
+
+    let editingUserId = null;
+
+    function editUser(userStr) {
+        const u = JSON.parse(decodeURIComponent(userStr));
+        editingUserId = u.id;
+        document.getElementById('form-title').textContent = "Update User";
+        document.getElementById('add-name').value = u.name;
+        document.getElementById('add-username').value = u.username;
+        document.getElementById('add-password').value = ''; 
+        document.getElementById('add-password').required = false;
+        document.getElementById('add-role').value = u.role;
+        document.getElementById('add-device').value = u.device_id || '';
+        
+        document.getElementById('submit-btn').textContent = "Save Changes";
+        document.getElementById('submit-btn').classList.replace('bg-blue-600', 'bg-emerald-600');
+        document.getElementById('submit-btn').classList.replace('hover:bg-blue-700', 'hover:bg-emerald-700');
+        document.getElementById('cancel-btn').classList.remove('hidden');
+    }
+
+    function cancelEdit() {
+        editingUserId = null;
+        document.getElementById('user-form').reset();
+        document.getElementById('form-title').textContent = "Add User";
+        document.getElementById('add-password').required = true;
+        document.getElementById('submit-btn').textContent = "Create User";
+        document.getElementById('submit-btn').classList.replace('bg-emerald-600', 'bg-blue-600');
+        document.getElementById('submit-btn').classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
+        document.getElementById('cancel-btn').classList.add('hidden');
+    }
+
+    async function deleteUser(id) {
+        if(!confirm("Are you sure you want to delete this user?")) return;
+        try {
+            const res = await fetch(`/api/users/${id}`, { method: 'DELETE', headers: App.authHeader() });
+            if(res.ok) { App.showToast("Deleted", "success"); loadUsers(); }
+            else { App.showToast((await res.json()).detail || "Failed", "error"); }
+        } catch(e) {}
+    }
+
+    async function saveUser(evt) {
+        evt.preventDefault();
+        
+        const payload = {
+            name: document.getElementById('add-name').value,
+            username: document.getElementById('add-username').value,
+            role: document.getElementById('add-role').value,
+            device_id: document.getElementById('add-device').value ? parseInt(document.getElementById('add-device').value) : null
+        };
+        const pass = document.getElementById('add-password').value;
+        if(pass || !editingUserId) payload.password = pass; // Don't send empty pass on edit
+        
+        const method = editingUserId ? 'PUT' : 'POST';
+        const url = editingUserId ? `/api/users/${editingUserId}` : '/api/users';
+        
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...App.authHeader()
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if(res.ok) {
+                App.showToast(editingUserId ? "User updated" : "User created", "success");
+                cancelEdit(); 
+                loadUsers();
+            } else {
+                const data = await res.json();
+                App.showToast(data.detail || "Failed", "error");
+            }
+        } catch(e) {
+            App.showToast("Network Error", "error");
+        }
+    }
+</script>
+{% endblock %}

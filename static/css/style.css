@@ -1,0 +1,54 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Base recorder UI overlays */
+#video-overlay {
+  pointer-events: none;
+}
+
+/* Toast animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.toast-leave {
+  animation: fadeOut 0.3s ease-in forwards;
+}

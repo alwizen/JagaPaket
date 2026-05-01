@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="h-full flex flex-col">
+    {% set page_title = 'Admin Dashboard' %}
+    {% include 'admin_navbar.html' %}
+
+    <!-- Layout -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Sidebar Navigation -->
+        {% include "admin_sidebar.html" %}
+
+        <!-- Main Content -->
+        <main class="flex-1 bg-slate-900 p-8 overflow-y-auto">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-white mb-6">Welcome to Dashboard</h2>
+                
+                <h3 class="text-lg font-bold text-slate-300 mb-4">Statistik Rekaman</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 border-t-4 border-t-blue-500 shadow-lg">
+                         <h3 class="text-slate-400 font-medium mb-1">Hari Ini</h3>
+                         <p id="stat-today" class="text-3xl font-bold text-white">...</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 border-t-4 border-t-emerald-500 shadow-lg">
+                         <h3 class="text-slate-400 font-medium mb-1">Minggu Ini</h3>
+                         <p id="stat-week" class="text-3xl font-bold text-white">...</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 border-t-4 border-t-purple-500 shadow-lg">
+                         <h3 class="text-slate-400 font-medium mb-1">Bulan Ini</h3>
+                         <p id="stat-month" class="text-3xl font-bold text-white">...</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 border-t-4 border-t-indigo-500 shadow-lg">
+                         <h3 class="text-slate-400 font-medium mb-1">Total Recorded</h3>
+                         <p id="stat-total" class="text-3xl font-bold text-white">...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('user_role');
+        
+        if(!username || role !== 'SUPER_ADMIN') {
+            window.location.href = '/';
+            return;
+        }
+        
+        document.getElementById('username-display').textContent = username;
+        
+        // Fetch Stats
+        fetch('/api/videos/stats', { headers: App.authHeader() })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('stat-today').textContent = data.today;
+                document.getElementById('stat-week').textContent = data.week;
+                document.getElementById('stat-month').textContent = data.month;
+                document.getElementById('stat-total').textContent = data.total;
+            })
+            .catch(e => console.error("Could not fetch stats", e));
+    });
+</script>
+{% endblock %}
