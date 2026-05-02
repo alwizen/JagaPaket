@@ -13,20 +13,27 @@
             
             <!-- Filters -->
             <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <form id="search-form" class="flex gap-4 items-end">
-                    <div class="flex-1">
+                <form id="search-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                    <div>
                         <label class="block text-sm font-medium text-slate-400 mb-2">Invoice Number</label>
-                        <input type="text" id="filter-invoice" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
+                        <input type="text" placeholder="Masukkan Invoice" id="filter-invoice" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
                     </div>
-                    <div class="flex-1">
+                    <div>
                         <label class="block text-sm font-medium text-slate-400 mb-2">Operator</label>
                         <select id="filter-operator" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
                             <option value="">Semua Operator</option>
-                            <!-- populated by js -->
                         </select>
                     </div>
                     <div>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded font-medium transition-colors h-[42px]">
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Dari Tanggal</label>
+                        <input type="date" id="filter-date-from" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Sampai Tanggal</label>
+                        <input type="date" id="filter-date-to" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded font-medium transition-colors h-[42px]">
                             Search
                         </button>
                     </div>
@@ -85,7 +92,8 @@
         const username = localStorage.getItem('username');
         if(!username) { window.location.href = '/'; return; }
         
-        document.getElementById('username-display').textContent = username;
+        const ud = document.getElementById('username-display');
+        if (ud) ud.textContent = username;
         
         if(localStorage.getItem('user_role') === 'SUPER_ADMIN') {
             loadOperatorsDropdown();
@@ -122,6 +130,8 @@
     async function loadVideos() {
         const invoice = document.getElementById('filter-invoice').value;
         const operator = document.getElementById('filter-operator').value;
+        const dateFrom = document.getElementById('filter-date-from').value;
+        const dateTo = document.getElementById('filter-date-to').value;
         
         const params = new URLSearchParams({
             page: currentPage,
@@ -130,6 +140,8 @@
         
         if(invoice) params.append('invoice_number', invoice);
         if(operator) params.append('operator_id', operator);
+        if(dateFrom) params.append('date_from', dateFrom);
+        if(dateTo) params.append('date_to', dateTo);
         
         try {
             const res = await fetch(`/api/videos?${params.toString()}`, {

@@ -97,6 +97,8 @@ async def get_video_stats(db: AsyncSession = Depends(get_db)):
 async def list_videos(
     invoice_number: str = None,
     operator_id: int = None,
+    date_from: str = None,
+    date_to: str = None,
     page: int = 1,
     limit: int = 20,
     db: AsyncSession = Depends(get_db),
@@ -118,6 +120,18 @@ async def list_videos(
     if invoice_number:
         stmt = stmt.where(PackingVideo.invoice_number.ilike(f"%{invoice_number}%"))
         count_stmt = count_stmt.where(PackingVideo.invoice_number.ilike(f"%{invoice_number}%"))
+
+    if date_from:
+        from datetime import datetime
+        dt_from = datetime.strptime(date_from, "%Y-%m-%d")
+        stmt = stmt.where(PackingVideo.created_at >= dt_from)
+        count_stmt = count_stmt.where(PackingVideo.created_at >= dt_from)
+
+    if date_to:
+        from datetime import datetime, timedelta
+        dt_to = datetime.strptime(date_to, "%Y-%m-%d") + timedelta(days=1)
+        stmt = stmt.where(PackingVideo.created_at < dt_to)
+        count_stmt = count_stmt.where(PackingVideo.created_at < dt_to)
         
     stmt = stmt.order_by(PackingVideo.created_at.desc()).offset(skip).limit(limit)
     

@@ -52,7 +52,8 @@
             return;
         }
         
-        document.getElementById('username-display').textContent = username;
+        const ud = document.getElementById('username-display');
+        if (ud) ud.textContent = username;
         
         // Fetch Stats
         fetch('/api/videos/stats', { headers: App.authHeader() })

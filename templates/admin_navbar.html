@@ -1,15 +1,98 @@
     <!-- Admin Navbar -->
-    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center z-20">
-        <div class="flex items-center">
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white transition-colors mr-3">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    <header class="bg-slate-800 border-b border-slate-700 px-6 flex justify-between items-center z-20">
+       <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white transition-colors mr-1">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
-            <h1 class="text-xl font-bold text-white">{{ page_title | default('Admin Dashboard') }}</h1>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center">
+                    <img src="/static/img/logo.png" alt="Solu8i Logo" class="w-48 h-auto">
+                </div>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
-            <span id="username-display" class="text-slate-300 font-medium"></span>
-            <button onclick="App.logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded shadow transition-colors">
-                Log Out
+        <!-- User Avatar Dropdown -->
+        <div class="relative">
+            <button id="avatar-btn" onclick="toggleUserDropdown()" class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center border-2 border-slate-600 hover:border-slate-400 transition-colors focus:outline-none overflow-hidden">
+                <img src="/static/img/ico.svg" alt="User" class="w-7 h-7">
             </button>
+            <!-- Dropdown Menu -->
+            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+                <!-- Role Display -->
+                <div class="px-4 py-3 flex items-center gap-3 border-b border-slate-100">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="dropdown-role" class="text-sm font-semibold text-slate-700">Super Admin</span>
+                </div>
+                <!-- Logout -->
+                <button onclick="App.logout()" class="w-full px-4 py-3 flex items-center gap-3 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors text-sm font-medium">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Keluar
+                </button>
+            </div>
         </div>
     </header>
+
+    <script>
+    function toggleUserDropdown() {
+        const dd = document.getElementById('user-dropdown');
+        dd.classList.toggle('hidden');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dd = document.getElementById('user-dropdown');
+        const btn = document.getElementById('avatar-btn');
+        if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+            dd.classList.add('hidden');
+        }
+    });
+
+
+
+    // Theme switcher
+    function setTheme(theme) {
+        localStorage.setItem('app-theme', theme);
+        applyTheme(theme);
+        updateThemeButtons(theme);
+    }
+
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        if (theme === 'light') {
+            root.classList.remove('dark');
+        } else if (theme === 'dark') {
+            root.classList.add('dark');
+        } else {
+            // system
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                root.classList.add('dark');
+            } else {
+                root.classList.remove('dark');
+            }
+        }
+    }
+
+    function updateThemeButtons(active) {
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.remove('bg-slate-200', 'text-slate-900');
+            btn.classList.add('text-slate-400');
+        });
+        const activeBtn = document.getElementById('theme-' + active);
+        if (activeBtn) {
+            activeBtn.classList.add('bg-slate-200', 'text-slate-900');
+            activeBtn.classList.remove('text-slate-400');
+        }
+    }
+
+    // Init on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('app-theme') || 'dark';
+        applyTheme(savedTheme);
+        updateThemeButtons(savedTheme);
+
+        // Set role display
+        const role = localStorage.getItem('user_role') || '';
+        const roleMap = { 'SUPER_ADMIN': 'Super Admin', 'ADMIN': 'Admin', 'USER': 'User' };
+        const roleEl = document.getElementById('dropdown-role');
+        if (roleEl) roleEl.textContent = roleMap[role] || role;
+    });
+    </script>

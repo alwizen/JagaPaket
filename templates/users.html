@@ -81,7 +81,8 @@
         if(!username || localStorage.getItem('user_role') !== 'SUPER_ADMIN') {
             window.location.href = '/'; return;
         }
-        document.getElementById('username-display').textContent = username;
+        const ud = document.getElementById('username-display');
+        if (ud) ud.textContent = username;
         loadUsers();
     });
 

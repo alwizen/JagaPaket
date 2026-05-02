@@ -22,29 +22,7 @@
 </div>
 
 <div class="h-full flex flex-col">
-    <!-- Navbar -->
-    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center z-10 transition-all duration-300">
-        <div class="flex items-center gap-4">
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white transition-colors mr-1">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center">
-                    <img src="/static/img/logo.png" alt="Solu8i Logo" class="w-48 h-auto">
-                </div>
-                <h1 class="text-xl font-bold text-white hidden sm:flex items-center gap-2">
-                    Warehouse Packing Recorder
-                </h1>
-            </div>
-            <span id="role-badge" class="px-2 py-1 bg-slate-700 text-xs text-slate-300 rounded font-medium ml-4 hidden">ROLE</span>
-        </div>
-        <div class="flex items-center gap-4">
-            <span id="username-display" class="text-slate-300 font-medium"></span>
-            <button onclick="App.logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded shadow transition-colors">
-                Log Out
-            </button>
-        </div>
-    </header>
+    {% include 'admin_navbar.html' %}
 
     <!-- Content Area -->
     <div class="flex-1 overflow-hidden flex relative bg-slate-900">
@@ -140,15 +118,13 @@
             return;
         }
         
-        document.getElementById('username-display').textContent = username;
-        
-        const badge = document.getElementById('role-badge');
-        badge.textContent = role;
-        badge.classList.remove('hidden');
+
+        // Set dropdown role
+        const roleMap = { 'SUPER_ADMIN': 'Super Admin', 'ADMIN': 'Admin', 'USER': 'User' };
+        const roleEl = document.getElementById('dropdown-role');
+        if (roleEl) roleEl.textContent = roleMap[role] || role;
+
         if(role === 'SUPER_ADMIN') {
-            badge.classList.replace('bg-slate-700', 'bg-purple-900');
-            badge.classList.add('text-purple-300', 'border', 'border-purple-700');
-            // Show dashboard link in sidebar
             const dashLink = document.getElementById('nav-dashboard-link');
             if(dashLink) dashLink.classList.replace('hidden', 'flex');
         }
