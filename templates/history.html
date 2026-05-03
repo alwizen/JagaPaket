@@ -121,6 +121,14 @@
         document.getElementById('btn-next').disabled = (end >= total);
     }
 
+    function formatDuration(seconds) {
+        if (!seconds) return '-';
+        if (seconds < 60) return seconds + ' detik';
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return s > 0 ? `${m} menit ${s} detik` : `${m} menit`;
+    }
+
     function renderTable(videos) {
         const tbody = document.getElementById('videos-tbody');
         tbody.innerHTML = '';
@@ -140,7 +148,7 @@
                 <td class="px-6 py-4 font-mono text-blue-400 font-bold">${v.invoice_number}</td>
                 <td class="px-6 py-4">${dateStr}</td>
                 <td class="px-6 py-4">${v.operator_name || '-'}</td>
-                <td class="px-6 py-4">${v.duration ? v.duration + 's' : '-'}</td>
+                <td class="px-6 py-4">${formatDuration(v.duration)}</td>
                 <td class="px-6 py-4 text-right">
                     <button onclick="playVideo(${v.id}, '${v.invoice_number}')" class="text-emerald-400 hover:text-emerald-300 font-medium text-sm mr-3">Preview</button>
                     <button onclick="downloadVideo(${v.id}, '${v.invoice_number}')" class="text-blue-400 hover:text-blue-300 font-medium text-sm mr-3">Download</button>
