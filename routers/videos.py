@@ -25,53 +25,67 @@ async def upload_video(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_packing_staff)
 ):
-    date_str = datetime.utcnow().strftime("%Y-%m-%d")
-    storage_dir = os.path.join(settings.VIDEO_STORAGE_PATH, date_str)
-    
-    os.makedirs(storage_dir, exist_ok=True)
-    
-    filename = f"{invoice_number}.mp4"
-    filepath = os.path.join(storage_dir, filename)
-    
-    # Handle filename collision
-    counter = 1
-    base_name = invoice_number
-    while os.path.exists(filepath):
-        filename = f"{base_name}_{counter}.mp4"
-        filepath = os.path.join(storage_dir, filename)
-        counter += 1
+    try:
+        date_str = datetime.utcnow().strftime("%Y-%m-%d")
+        storage_dir = os.path.join(settings.VIDEO_STORAGE_PATH, date_str)
+        
+        # Ensure directory exists with absolute path logging
+        abs_storage_dir = os.path.abspath(storage_dir)
+        os.makedirs(abs_storage_dir, exist_ok=True)
+        
+        filename = f"{invoice_number}.mp4"
+        filepath = os.path.join(abs_storage_dir, filename)
+        
+        # Handle filename collision
+        counter = 1
+        base_name = invoice_number
+        while os.path.exists(filepath):
+            filename = f"{base_name}_{counter}.mp4"
+            filepath = os.path.join(abs_storage_dir, filename)
+            counter += 1
 
-    async with aiofiles.open(filepath, 'wb') as out_file:
-        content = await video.read()
-        await out_file.write(content)
-        
-    start_time = None
-    if timestamp_start:
-        try:
-            start_time = datetime.fromisoformat(timestamp_start.replace('Z', '+00:00'))
-        except ValueError:
+        logger.info(f"Uploading video: {filename} to {filepath} (Size: {video.size or 'Unknown'})")
+
+        # Use chunked streaming instead of loading everything into memory
+        async with aiofiles.open(filepath, 'wb') as out_file:
+            while content := await video.read(1024 * 1024): # 1MB chunks
+                await out_file.write(content)
+            
+        start_time = None
+        if timestamp_start:
+            try:
+                start_time = datetime.fromisoformat(timestamp_start.replace('Z', '+00:00'))
+            except ValueError:
+                start_time = datetime.utcnow()
+        else:
             start_time = datetime.utcnow()
-    else:
-        start_time = datetime.utcnow()
+            
+        dev_id = device_id if device_id != 0 else current_user.device_id
         
-    dev_id = device_id if device_id != 0 else current_user.device_id
-    
-    new_video = PackingVideo(
-        invoice_number=invoice_number,
-        filename=filename,
-        filepath=filepath,
-        device_id=dev_id,
-        operator_id=current_user.id,
-        timestamp_start=start_time,
-        timestamp_end=datetime.utcnow(),
-        duration=duration
-    )
-    
-    db.add(new_video)
-    await db.commit()
-    await db.refresh(new_video)
-    
-    return new_video
+        new_video = PackingVideo(
+            invoice_number=invoice_number,
+            filename=filename,
+            filepath=filepath,
+            device_id=dev_id,
+            operator_id=current_user.id,
+            timestamp_start=start_time,
+            timestamp_end=datetime.utcnow(),
+            duration=duration
+        )
+        
+        db.add(new_video)
+        await db.commit()
+        await db.refresh(new_video)
+        
+        logger.info(f"Video uploaded and saved to DB: {filename}")
+        return new_video
+        
+    except Exception as e:
+        logger.error(f"Failed to upload video {invoice_number}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error during upload: {str(e)}"
+        )
 
 @router.get("/stats")
 async def get_video_stats(db: AsyncSession = Depends(get_db)):
