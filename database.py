@@ -15,7 +15,7 @@ engine = create_async_engine(
     pool_size=20,        # Connection pool size
     max_overflow=10,     # Max overflow connections
     connect_args={
-        "timeout": 10,
+        "connect_timeout": 10,
         "autocommit": False,
     }
 )
