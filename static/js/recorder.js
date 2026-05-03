@@ -138,7 +138,7 @@ function drawOverlay() {
     const padding = 30 * scale;
     
     // Calculate dynamic box height based on active lines
-    const numLines = isRecording ? 4 : 3;
+    const numLines = isRecording ? 3 : 2;
     const boxHeight = (lineSpacing * numLines) + (padding * 0.8);
     
     // Bottom left overlay box
@@ -151,7 +151,6 @@ function drawOverlay() {
     
     // Data
     const username = localStorage.getItem('username');
-    const deviceId = localStorage.getItem('device_id') || 'Unknown Device';
     const now = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
     
     // Start drawing from top of the box + padding
@@ -159,21 +158,18 @@ function drawOverlay() {
     
     if (isRecording) {
         ctx.fillStyle = '#ef4444'; // Red
-        ctx.font = `bold ${fontSize + 4}px monospace`;
-        ctx.fillText(`[REC] INV: ${currentInvoice}`, padding * 1.5, currentY);
+        ctx.font = `bold ${fontSize}px monospace`;
+        ctx.fillText(`Pesanan ${currentInvoice}`, padding * 1.5, currentY);
         currentY += lineSpacing;
     }
     
     ctx.fillStyle = 'white';
-    ctx.font = `bold ${fontSize}px monospace`;
+    ctx.font = `${fontSize}px monospace`;
     
-    ctx.fillText(`OPERATOR : ${username}`, padding * 1.5, currentY);
+    ctx.fillText(`USER : ${username}`, padding * 1.5, currentY);
     currentY += lineSpacing;
     
-    ctx.fillText(`DEVICE   : ${deviceId}`, padding * 1.5, currentY);
-    currentY += lineSpacing;
-    
-    ctx.fillText(`TIME     : ${now}`, padding * 1.5, currentY);
+    ctx.fillText(`TIME : ${now}`, padding * 1.5, currentY);
     
     animationFrameId = requestAnimationFrame(drawOverlay);
 }

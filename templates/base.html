@@ -9,16 +9,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = { darkMode: 'class' };
-      // Ensure dark theme is loaded persistently on paint, or initialize it natively
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
+      const theme = localStorage.getItem('theme') || 'dark';
+      if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
     </script>
     <style>
       /* Light mode zero-refactor protocol overrides */
-      html:not(.dark) body, html:not(.dark) .bg-slate-900 { background-color: #f8fafc !important; }
+      html:not(.dark) body, html:not(.dark) .bg-slate-900, html:not(.dark) .bg-slate-900\/50 { background-color: #f8fafc !important; }
       html:not(.dark) .bg-slate-800, html:not(.dark) .bg-slate-800\/80 { background-color: #ffffff !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border-color: #e2e8f0; }
       html:not(.dark) .border-slate-700 { border-color: #e2e8f0 !important; }
       html:not(.dark) .text-white { color: #0f172a !important; }
@@ -33,12 +33,15 @@
       html:not(.dark) .bg-slate-700 { background-color: #f1f5f9 !important; border: 1px solid #e2e8f0; }
       html:not(.dark) .divide-slate-700\/50 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
       html:not(.dark) .bg-black\/90 { background-color: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(10px); }
-      html:not(.dark) .bg-black\/60 { background-color: rgba(255, 255, 255, 0.8) !important; }
-      html:not(.dark) #video-container { background-color: #e2e8f0 !important; }
+      html:not(.dark) .bg-black\/60 { background-color: rgba(255, 255, 255, 0.8) !important; color: #0f172a !important; }
+      html:not(.dark) #video-container { background-color: #f1f5f9 !important; }
+      html:not(.dark) .bg-blue-900\/50 { background-color: #dbeafe !important; border-color: #bfdbfe !important; }
+      html:not(.dark) .bg-red-900\/50 { background-color: #fee2e2 !important; border-color: #fecaca !important; }
+      html:not(.dark) .border-blue-800 { border-color: #3b82f6 !important; }
+      html:not(.dark) .border-red-800 { border-color: #ef4444 !important; }
+      html:not(.dark) .text-blue-400 { color: #1d4ed8 !important; }
+      html:not(.dark) .text-red-400, html:not(.dark) .text-red-300 { color: #b91c1c !important; }
       
-      /* Floating Button */
-      .theme-btn { position: fixed; bottom: 24px; right: 24px; z-index: 99999; background: #3b82f6; color: white; padding: 12px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.3s; }
-      .theme-btn:hover { background: #2563eb; transform: scale(1.1); }
     </style>
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -60,37 +63,8 @@
       {% block content %}{% endblock %}
     </main>
 
-    <!-- Global Theme Switcher -->
-    <button onclick="toggleThemeGlobal()" class="theme-btn" title="Toggle Light/Dark Mode">
-        <svg id="theme-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-        </svg>
-    </button>
 
     <script src="/static/js/app.js"></script>
-    <script>
-      function updateThemeIcon() {
-          const icon = document.getElementById('theme-icon');
-          if (document.documentElement.classList.contains('dark')) {
-              icon.innerHTML = '<path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.32a1 1 0 011.415 0l.707.707a1 1 0 01-1.414 1.415l-.708-.708a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-2.32 4.22a1 1 0 010 1.415l-.707.707a1 1 0 01-1.415-1.414l.708-.708a1 1 0 011.414 0zM10 18a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zm-4.22-2.32a1 1 0 01-1.415 0l-.707-.707a1 1 0 011.414-1.415l.708.708a1 1 0 010 1.414zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm2.32-4.22a1 1 0 010-1.415l.707-.707a1 1 0 011.415 1.414l-.708.708a1 1 0 01-1.414 0zM10 5a5 5 0 100 10 5 5 0 000-10z" clip-rule="evenodd" />';
-          } else {
-              icon.innerHTML = '<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>';
-          }
-      }
-      
-      function toggleThemeGlobal() {
-          if (document.documentElement.classList.contains('dark')) {
-              document.documentElement.classList.remove('dark');
-              localStorage.setItem('theme', 'light');
-          } else {
-              document.documentElement.classList.add('dark');
-              localStorage.setItem('theme', 'dark');
-          }
-          updateThemeIcon();
-      }
-      
-      updateThemeIcon();
-    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

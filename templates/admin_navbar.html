@@ -13,7 +13,9 @@
         <!-- User Avatar Dropdown -->
         <div class="relative">
             <button id="avatar-btn" onclick="toggleUserDropdown()" class="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center border-2 border-slate-600 hover:border-slate-400 transition-colors focus:outline-none overflow-hidden">
-                <img src="/static/img/ico.svg" alt="User" class="w-7 h-7">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
             </button>
             <!-- Dropdown Menu -->
             <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
@@ -22,6 +24,22 @@
                     <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span id="dropdown-role" class="text-sm font-semibold text-slate-700">Super Admin</span>
                 </div>
+                <!-- Theme Toggle -->
+                <div class="px-4 py-2 border-b border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tema</p>
+                    <div class="flex bg-slate-100 p-1 rounded-lg gap-1">
+                        <button id="theme-light" onclick="setTheme('light')" class="theme-btn flex-1 flex items-center justify-center py-1.5 rounded-md transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z"></path></svg>
+                        </button>
+                        <button id="theme-dark" onclick="setTheme('dark')" class="theme-btn flex-1 flex items-center justify-center py-1.5 rounded-md transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        </button>
+                        <button id="theme-system" onclick="setTheme('system')" class="theme-btn flex-1 flex items-center justify-center py-1.5 rounded-md transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Logout -->
                 <button onclick="App.logout()" class="w-full px-4 py-3 flex items-center gap-3 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors text-sm font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
@@ -50,7 +68,7 @@
 
     // Theme switcher
     function setTheme(theme) {
-        localStorage.setItem('app-theme', theme);
+        localStorage.setItem('theme', theme);
         applyTheme(theme);
         updateThemeButtons(theme);
     }
@@ -73,19 +91,19 @@
 
     function updateThemeButtons(active) {
         document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.classList.remove('bg-slate-200', 'text-slate-900');
+            btn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
             btn.classList.add('text-slate-400');
         });
         const activeBtn = document.getElementById('theme-' + active);
         if (activeBtn) {
-            activeBtn.classList.add('bg-slate-200', 'text-slate-900');
+            activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
             activeBtn.classList.remove('text-slate-400');
         }
     }
 
     // Init on load
     document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('app-theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
         updateThemeButtons(savedTheme);
 
