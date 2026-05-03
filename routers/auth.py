@@ -14,18 +14,13 @@ router = APIRouter()
 async def login_for_access_token(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db) 
 ):
     stmt = select(User).where(User.username == form_data.username)
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
-    
-    try:
-        valid_password = verify_password(form_data.password, user.password_hash) if user else False
-    except ValueError:
-        valid_password = False
 
-    if not user or not valid_password:
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
