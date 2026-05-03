@@ -17,41 +17,46 @@
             </div>
 
             <!-- Search Form - Focused -->
-            <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl">
-                <form id="search-form" class="space-y-6">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+                <form id="search-form" class="space-y-4">
                     <div class="relative group">
-                        <label class="block text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Nomor Invoice</label>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Nomor Invoice</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-6 w-6 text-slate-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <svg class="h-5 w-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input type="text" placeholder="Contoh: INV-20231001" id="filter-invoice" class="w-full bg-slate-900 border-2 border-slate-700 rounded-xl pl-12 pr-4 py-4 text-xl text-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-inner">
+                            <input type="text" placeholder="INV-20231001" id="filter-invoice" class="w-full bg-slate-900 border-2 border-slate-700 rounded-xl pl-12 pr-4 py-3 text-base text-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-inner">
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div id="operator-filter-container">
                             <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Operator</label>
-                            <select id="filter-operator" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                            <select id="filter-operator" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:ring-2 focus:ring-blue-500">
                                 <option value="">Semua Operator</option>
                             </select>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                              <div>
                                 <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Mulai</label>
-                                <input type="date" id="filter-date-from" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                                <input type="date" id="filter-date-from" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:ring-2 focus:ring-blue-500">
                              </div>
                              <div>
                                 <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Selesai</label>
-                                <input type="date" id="filter-date-to" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                                <input type="date" id="filter-date-to" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:ring-2 focus:ring-blue-500">
                              </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-lg flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        Mulai Pencarian
-                    </button>
+                    <div class="flex gap-3">
+                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold text-base transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-lg flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            Mulai Pencarian
+                        </button>
+                        <button type="button" onclick="resetForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-6 py-3 rounded-xl font-bold text-base transition-all border border-slate-600">
+                            Reset
+                        </button>
+                    </div>
                 </form>
             </div>
             
@@ -283,6 +288,13 @@
                  App.showToast("Failed to load video stream", "error");
                  closeModal();
             });
+    }
+
+    function resetForm() {
+        document.getElementById('search-form').reset();
+        const resultsSection = document.getElementById('results-section');
+        if(resultsSection) resultsSection.classList.add('hidden');
+        window.history.pushState({}, document.title, window.location.pathname);
     }
 
     function closeModal() {
