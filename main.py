@@ -129,6 +129,10 @@ async def serve_recorder(request: Request):
 async def serve_videos(request: Request):
     return templates.TemplateResponse(request=request, name="videos.html")
 
+@app.get("/history_page")
+async def serve_history(request: Request):
+    return templates.TemplateResponse(request=request, name="history.html")
+
 @app.get("/users_page")
 async def serve_users(request: Request):
     return templates.TemplateResponse(request=request, name="users.html")

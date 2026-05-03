@@ -47,8 +47,12 @@
         const username = localStorage.getItem('username');
         const role = localStorage.getItem('user_role');
         
-        if(!username || role !== 'SUPER_ADMIN') {
+        if(!username) {
             window.location.href = '/';
+            return;
+        }
+        if(role !== 'SUPER_ADMIN') {
+            window.location.href = '/recorder';
             return;
         }
         

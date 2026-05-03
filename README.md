@@ -1,109 +1,84 @@
-# Warehouse Packing Proof Recording System
+# Warehouse Packing Proof Recording System (Jaga Paket)
 
-## Prasyarat
+Sistem Perekaman Bukti Packing yang efisien dan andal untuk memastikan setiap paket yang dikirim memiliki bukti video yang valid.
 
-- Python 3
-- MariaDB (opsional, bisa menggunakan SQLite untuk testing)
-- Git
+## 🚀 Tech Stack
 
-## Setup Proyek di Komputer Baru (Clone)
+- **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+)
+- **Database**: MySQL / MariaDB (via SQLAlchemy & `aiomysql`)
+- **Frontend**: Tailwind CSS, HTMX, Alpine.js (via CDN)
+- **Templating**: Jinja2
+- **Environment**: `python-dotenv` & Pydantic Settings
 
-### 1. Clone Repository dari GitHub
+---
+
+## 🛠️ Setup Proyek
+
+### 1. Persiapan Environment
+
+Pastikan Python 3.10+ dan MySQL/MariaDB sudah terinstall.
 
 ```bash
 git clone https://github.com/USERNAME/recorderd.git
 cd recorderd
-```
-
-(Ganti `USERNAME` dengan username GitHub Anda)
-
-### 2. Buat Virtual Environment
-
-Untuk Fish shell:
-```bash
 python3 -m venv venv
-source venv/bin/activate.fish
-```
-
-Untuk Bash:
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Untuk Windows (PowerShell):
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install --upgrade pip
+source venv/bin/activate  # (atau venv/bin/activate.fish untuk user fish)
 pip install -r requirements.txt
 ```
 
-### 4. (Opsional) Setup Database Environment
+### 2. Konfigurasi Database (.env)
 
-Jika Anda ingin menggunakan MariaDB, buat file `.env` di root folder:
+Aplikasi menggunakan konfigurasi modular. Buat file `.env` di root folder:
 
+```ini
+# Database Configuration
+DB_USER=root
+DB_PASSWORD=admin
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=recorderd
+
+# Storage Configuration
+VIDEO_STORAGE_PATH=./videos
 ```
-DATABASE_URL=mysql+aiomysql://root:password_anda@localhost:3306/recorderd
+
+_Catatan: Jika `.env` tidak ada, sistem akan default menggunakan SQLite `recorderd.db`._
+
+### 3. Menjalankan Aplikasi
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Atau biarkan default SQLite untuk development/testing.
+Akses di: `http://localhost:8000`
 
 ---
 
-## Cara Menjalankan Aplikasi
+## ✨ Fitur Utama
 
-Setelah setup selesai, ikuti langkah berikut untuk menjalankan aplikasi:
+- **Admin Dashboard**: Ringkasan statistik perekaman harian, mingguan, dan bulanan.
+- **Advanced Recorder**: Perekaman bukti packing dengan barcode/invoice trigger dan upload otomatis.
+- **Global Search**: Cari video berdasarkan Nomor Pesanan (INV) langsung dari navbar di halaman mana pun.
+- **Recording History**: Daftar lengkap seluruh rekaman dengan fitur preview dan download.
+- **Dark/Light Mode**: Dukungan tema visual yang dinamis sesuai preferensi pengguna.
+- **Modular Config**: Pengaturan kredensial yang aman melalui environment variables.
 
-1. **Aktifkan Virtual Environment:**
-   Jika Anda menggunakan fish shell:
+---
 
-   ```bash
-   source venv/bin/activate.fish
-   ```
+## 📖 Panduan Penggunaan
 
-   Atau untuk bash biasa:
+Untuk instruksi mendetail mengenai cara mengoperasikan sistem oleh operator dan admin, silakan baca:
+👉 **[USER_GUIDE.md](./USER_GUIDE.md)**
 
-   ```bash
-   source venv/bin/activate
-   ```
+---
 
-2. **Konfigurasi Database (Penting):**
-   Secara default, saat ini program disetting untuk menggunakan **SQLite** (di file `recorderd.db`) agar langsung bisa dites.
-   Jika Anda ingin menggunakan **MariaDB** untuk production, buka file `config.py` lalu ubah URL database Anda menjadi seperti ini:
+## 🔑 Default Login
 
-   ```python
-   DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+aiomysql://root:password_anda@localhost:3306/recorderd")
-   ```
+Saat pertama kali dijalankan, sistem membuat akun default:
 
-3. **Jalankan Server (Backend):**
+- **Username**: `admin`
+- **Password**: `admin123`
 
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000
-   ```
+---
 
-4. **Akses Dashboard (Di Komputer Client / Windows):**
-   Buka Google Chrome lalu akses ke IP Server Backend. Jika di testing lokal, buka:
-   👉 `http://localhost:8000`
-
-## Kredensial Bawaan (Default Login)
-
-Aplikasi akan membuat satu pengguna administrator saat dijalankan untuk pertama kalinya.
-
-- **Username:** `admin`
-- **Password:** `admin123`
-
-## Menjalankan Chrome Kiosk Mode (Di Workstation Windows)
-
-Untuk mengunci layar khusus aplikasi packing di Windows, buat sebuah Shortcut Google Chrome dan ubah target / properties-nya menjadi seperti ini:
-
-```cmd
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk http://IP_SERVER_LINUX:8000/
-```
-
-Barcode Scanner Anda yang berbasis colok USB otomatis akan me-trigger mode rekam ketika input terdeteksi (sebagai script _keyboard wedge_ di latar belakang). Untuk berhenti, tekan ekstrak tombol `F8`.
+_Developed with ❤️ for efficient logistics._

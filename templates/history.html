@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="h-full flex flex-col">
+    {% set page_title = 'Recording History' %}
+    {% include 'admin_navbar.html' %}
+
+    <div class="flex flex-1 overflow-hidden relative">
+        {% include "admin_sidebar.html" %}
+        
+        <div class="flex-1 bg-slate-900 p-8 overflow-y-auto">
+            <div class="max-w-6xl mx-auto space-y-6 w-full">
+            
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-bold text-white">Recording History</h2>
+            </div>
+            
+            <!-- Grid -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="px-6 py-4 font-bold">No. Pesanan</th>
+                            <th class="px-6 py-4 font-bold">Tanggal</th>
+                            <th class="px-6 py-4 font-bold">Operator</th>
+                            <th class="px-6 py-4 font-bold">Durasi</th>
+                            <th class="px-6 py-4 text-right font-bold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="videos-tbody" class="divide-y divide-slate-700/50">
+                        <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Loading videos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div id="pagination-controls" class="flex justify-between items-center text-slate-400 text-sm mt-4 hidden">
+                <div>
+                    Menampilkan <span id="page-info-start" class="font-bold text-white">0</span> - <span id="page-info-end" class="font-bold text-white">0</span> dari <span id="page-info-total" class="font-bold text-white">0</span> video
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="changePage(-1)" id="btn-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition disabled:opacity-50 disabled:cursor-not-allowed">Sebelummya</button>
+                    <button onclick="changePage(1)" id="btn-next" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition disabled:opacity-50 disabled:cursor-not-allowed">Selanjutnya</button>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Player -->
+<div id="video-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-8">
+    <div class="w-full max-w-5xl flex justify-between items-center mb-4">
+        <h3 id="modal-title" class="text-xl font-bold text-white">Video Playback</h3>
+        <button onclick="closeModal()" class="text-white hover:text-red-400 bg-slate-800 p-2 rounded-full border border-slate-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <video id="modal-video-player" class="w-full max-w-5xl bg-black rounded-lg shadow-2xl border border-slate-700" controls></video>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = localStorage.getItem('username');
+        if(!username) { window.location.href = '/'; return; }
+        loadVideos();
+    });
+
+    let currentPage = 1;
+    const limitPerPage = 20;
+
+    async function loadVideos() {
+        const params = new URLSearchParams({
+            page: currentPage,
+            limit: limitPerPage
+        });
+        
+        try {
+            const res = await fetch(`/api/videos/?${params.toString()}`, {
+                headers: App.authHeader()
+            });
+            if (!res.ok) {
+                console.error("Fetch failed:", res.status, res.statusText);
+                throw new Error("Failed to fetch videos");
+            }
+            const payload = await res.json();
+            renderTable(payload.data);
+            renderPagination(payload.total);
+        } catch(err) {
+            console.error("loadVideos Error:", err);
+            // App.showToast("Error loading videos", "error");
+        }
+    }
+
+    function changePage(delta) {
+        currentPage += delta;
+        loadVideos();
+    }
+
+    function renderPagination(total) {
+        const controls = document.getElementById('pagination-controls');
+        if(total === 0) {
+            controls.classList.add('hidden');
+            return;
+        }
+        controls.classList.remove('hidden');
+        
+        const start = ((currentPage - 1) * limitPerPage) + 1;
+        const end = Math.min(currentPage * limitPerPage, total);
+        
+        document.getElementById('page-info-start').textContent = start;
+        document.getElementById('page-info-end').textContent = end;
+        document.getElementById('page-info-total').textContent = total;
+        
+        document.getElementById('btn-prev').disabled = (currentPage === 1);
+        document.getElementById('btn-next').disabled = (end >= total);
+    }
+
+    function renderTable(videos) {
+        const tbody = document.getElementById('videos-tbody');
+        tbody.innerHTML = '';
+        
+        if(videos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No videos found</td></tr>';
+            return;
+        }
+
+        videos.forEach(v => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-700/30 transition-colors';
+            
+            const dateStr = new Date(v.created_at + (v.created_at.endsWith('Z') ? '' : 'Z')).toLocaleString('id-ID');
+            
+            tr.innerHTML = `
+                <td class="px-6 py-4 font-mono text-blue-400 font-bold">${v.invoice_number}</td>
+                <td class="px-6 py-4">${dateStr}</td>
+                <td class="px-6 py-4">${v.operator_name || '-'}</td>
+                <td class="px-6 py-4">${v.duration ? v.duration + 's' : '-'}</td>
+                <td class="px-6 py-4 text-right">
+                    <button onclick="playVideo(${v.id}, '${v.invoice_number}')" class="text-emerald-400 hover:text-emerald-300 font-medium text-sm mr-3">Preview</button>
+                    <button onclick="downloadVideo(${v.id}, '${v.invoice_number}')" class="text-blue-400 hover:text-blue-300 font-medium text-sm mr-3">Download</button>
+                    ${localStorage.getItem('user_role') === 'SUPER_ADMIN' ? 
+                        `<button onclick="deleteVideo(${v.id})" class="text-red-400 hover:text-red-300 font-medium text-sm">Delete</button>` 
+                        : ''}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function playVideo(id, invoice) {
+        const modal = document.getElementById('video-modal');
+        const player = document.getElementById('modal-video-player');
+        document.getElementById('modal-title').textContent = `Invoice: ${invoice}`;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        fetch(`/api/videos/play/${id}`, { headers: App.authHeader() })
+            .then(res => res.blob())
+            .then(blob => {
+                 player.src = URL.createObjectURL(blob);
+                 player.play();
+            });
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('video-modal');
+        const player = document.getElementById('modal-video-player');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        player.pause();
+        player.src = '';
+    }
+
+    function downloadVideo(id, invoice) {
+        fetch(`/api/videos/play/${id}`, { headers: App.authHeader() })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Rekaman_${invoice}.mp4`;
+                a.click();
+            });
+    }
+
+    async function deleteVideo(id) {
+        if(!confirm("Are you sure?")) return;
+        const res = await fetch(`/api/videos/${id}`, {
+            method: 'DELETE',
+            headers: App.authHeader()
+        });
+        if(res.ok) loadVideos();
+    }
+</script>
+{% endblock %}

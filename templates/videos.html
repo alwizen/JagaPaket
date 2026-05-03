@@ -9,65 +9,83 @@
         {% include "admin_sidebar.html" %}
         
         <div class="flex-1 bg-slate-900 p-8 overflow-y-auto">
-            <div class="max-w-6xl mx-auto space-y-6 w-full">
+            <div class="max-w-4xl mx-auto space-y-8 w-full py-12">
             
-            <!-- Filters -->
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <form id="search-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Invoice Number</label>
-                        <input type="text" placeholder="Masukkan Invoice" id="filter-invoice" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl font-bold text-white">Cari Rekaman Packing</h2>
+                <p class="text-slate-400">Masukkan nomor invoice untuk menemukan rekaman video</p>
+            </div>
+
+            <!-- Search Form - Focused -->
+            <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl">
+                <form id="search-form" class="space-y-6">
+                    <div class="relative group">
+                        <label class="block text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Nomor Invoice</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="h-6 w-6 text-slate-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input type="text" placeholder="Contoh: INV-20231001" id="filter-invoice" class="w-full bg-slate-900 border-2 border-slate-700 rounded-xl pl-12 pr-4 py-4 text-xl text-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-inner">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Operator</label>
-                        <select id="filter-operator" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
-                            <option value="">Semua Operator</option>
-                        </select>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="operator-filter-container">
+                            <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Operator</label>
+                            <select id="filter-operator" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Operator</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                             <div>
+                                <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Mulai</label>
+                                <input type="date" id="filter-date-from" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                             </div>
+                             <div>
+                                <label class="block text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider">Selesai</label>
+                                <input type="date" id="filter-date-to" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500">
+                             </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Dari Tanggal</label>
-                        <input type="date" id="filter-date-from" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Sampai Tanggal</label>
-                        <input type="date" id="filter-date-to" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded font-medium transition-colors h-[42px]">
-                            Search
-                        </button>
-                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-lg flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Mulai Pencarian
+                    </button>
                 </form>
             </div>
             
-            <!-- Grid -->
-            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-                <table class="w-full text-left text-sm text-slate-300">
-                    <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
-                        <tr>
-                            <th class="px-6 py-4">Invoice</th>
-                            <th class="px-6 py-4">Date/Time</th>
-                            <th class="px-6 py-4">Operator</th>
-                            <th class="px-6 py-4">Duration</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="videos-tbody" class="divide-y divide-slate-700/50">
-                        <tr><td colspan="5" class="px-6 py-4 text-center">Loading videos...</td></tr>
-                    </tbody>
-                </table>
+            <!-- Results Section - Initially Hidden -->
+            <div id="results-section" class="hidden space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="flex justify-between items-center text-slate-400">
+                    <h3 class="text-xl font-bold text-white">Hasil Pencarian</h3>
+                    <div id="search-count" class="text-sm"></div>
+                </div>
+                
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">No. Pesanan</th>
+                                <th class="px-6 py-4 font-bold">Tanggal</th>
+                                <th class="px-6 py-4 font-bold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="videos-tbody" class="divide-y divide-slate-700/50 text-slate-200">
+                            <!-- Results inject here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Simple Pagination -->
+                <div id="pagination-controls" class="flex justify-center gap-4 mt-6 hidden">
+                    <button onclick="changePage(-1)" id="btn-prev" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition disabled:opacity-50">Sebelummya</button>
+                    <button onclick="changePage(1)" id="btn-next" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition disabled:opacity-50">Selanjutnya</button>
+                </div>
             </div>
 
-            <!-- Pagination Controls -->
-            <div id="pagination-controls" class="flex justify-between items-center text-slate-400 text-sm mt-4 hidden">
-                <div>
-                    Menampilkan <span id="page-info-start" class="font-bold text-white">0</span> - <span id="page-info-end" class="font-bold text-white">0</span> dari <span id="page-info-total" class="font-bold text-white">0</span> video
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="changePage(-1)" id="btn-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition disabled:opacity-50 disabled:cursor-not-allowed">Sebelummya</button>
-                    <button onclick="changePage(1)" id="btn-next" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded transition disabled:opacity-50 disabled:cursor-not-allowed">Selanjutnya</button>
-                </div>
             </div>
+        </div>
 
             </div>
         </div>
@@ -103,6 +121,14 @@
             if(opFilter) opFilter.parentElement.style.display = 'none';
         }
         
+        // Handle global search parameter if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlInvoice = urlParams.get('invoice_number');
+        if (urlInvoice) {
+            const filterInvoiceEl = document.getElementById('filter-invoice');
+            if (filterInvoiceEl) filterInvoiceEl.value = urlInvoice;
+        }
+        
         loadVideos();
         
         document.getElementById('search-form').addEventListener('submit', (e) => {
@@ -133,6 +159,13 @@
         const dateFrom = document.getElementById('filter-date-from').value;
         const dateTo = document.getElementById('filter-date-to').value;
         
+        // Don't auto-load if no params (except if coming from global search)
+        if (!invoice && !operator && !dateFrom && !dateTo) {
+             const resultsSection = document.getElementById('results-section');
+             if(resultsSection) resultsSection.classList.add('hidden');
+             return;
+        }
+
         const params = new URLSearchParams({
             page: currentPage,
             limit: limitPerPage
@@ -144,15 +177,27 @@
         if(dateTo) params.append('date_to', dateTo);
         
         try {
-            const res = await fetch(`/api/videos?${params.toString()}`, {
+            const res = await fetch(`/api/videos/?${params.toString()}`, {
                 headers: App.authHeader()
             });
-            if (!res.ok) throw new Error("Failed to fetch videos");
+            if (!res.ok) {
+                console.error("Fetch failed:", res.status, res.statusText);
+                throw new Error("Failed to fetch videos");
+            }
             const payload = await res.json();
+            
+            const resultsSection = document.getElementById('results-section');
+            if(resultsSection) resultsSection.classList.remove('hidden');
+
             renderTable(payload.data);
             renderPagination(payload.total);
+            
+            const countEl = document.getElementById('search-count');
+            if(countEl) countEl.textContent = `Ditemukan ${payload.total} video`;
+
         } catch(err) {
-            App.showToast("Error loading videos", "error");
+            console.error("loadVideos Error:", err);
+            // App.showToast("Error loading videos", "error");
         }
     }
 
@@ -185,27 +230,30 @@
         tbody.innerHTML = '';
         
         if(videos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No videos found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-12 text-center text-slate-500 flex flex-col items-center gap-2 font-medium"><svg class="w-12 h-12 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Rekaman tidak ditemukan</td></tr>';
             return;
         }
 
         videos.forEach(v => {
             const tr = document.createElement('tr');
-            tr.className = 'hover:bg-slate-700/30 transition-colors';
+            tr.className = 'hover:bg-slate-700/30 transition-colors group';
             
             const dateStr = new Date(v.created_at + (v.created_at.endsWith('Z') ? '' : 'Z')).toLocaleString('id-ID');
             
             tr.innerHTML = `
-                <td class="px-6 py-4 font-mono text-blue-400 font-bold">${v.invoice_number}</td>
-                <td class="px-6 py-4">${dateStr}</td>
-                <td class="px-6 py-4">${v.operator_name || '-'}</td>
-                <td class="px-6 py-4">${v.duration ? v.duration + 's' : '-'}</td>
-                <td class="px-6 py-4 text-right">
-                    <button onclick="playVideo(${v.id}, '${v.invoice_number}')" class="text-emerald-400 hover:text-emerald-300 font-medium text-sm mr-3">Preview</button>
-                    <button onclick="downloadVideo(${v.id}, '${v.invoice_number}')" class="text-blue-400 hover:text-blue-300 font-medium text-sm mr-3">Download</button>
-                    ${localStorage.getItem('user_role') === 'SUPER_ADMIN' ? 
-                        `<button onclick="deleteVideo(${v.id})" class="text-red-400 hover:text-red-300 font-medium text-sm">Delete</button>` 
-                        : ''}
+                <td class="px-6 py-5 font-mono text-blue-400 font-bold text-base group-hover:text-blue-300 transition-colors">${v.invoice_number}</td>
+                <td class="px-6 py-5">
+                    <div class="text-slate-200 font-medium">${dateStr}</div>
+                    <div class="text-xs text-slate-500">Operator: ${v.operator_name || '-'}</div>
+                </td>
+                <td class="px-6 py-5 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button onclick="playVideo(${v.id}, '${v.invoice_number}')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg font-semibold text-xs border border-emerald-500/20 transition-all">Preview</button>
+                        <button onclick="downloadVideo(${v.id}, '${v.invoice_number}')" class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg font-semibold text-xs border border-blue-500/20 transition-all">Saves</button>
+                        ${localStorage.getItem('user_role') === 'SUPER_ADMIN' ? 
+                            `<button onclick="deleteVideo(${v.id})" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg font-semibold text-xs border border-red-500/20 transition-all">Hapus</button>` 
+                            : ''}
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
