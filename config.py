@@ -12,4 +12,4 @@ class Settings(BaseSettings):
     
     VIDEO_STORAGE_PATH: str = os.getenv("VIDEO_STORAGE_PATH", "./videos")
 
-settings = Settings()
+settings = Settings() 
