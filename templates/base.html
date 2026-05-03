@@ -4,51 +4,125 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JagaPaket | Packing Proof Recording System</title>
-    <link rel="icon" type="image/svg+xml" href="/static/img/ico.svg">
+    <link rel="icon" type="image/svg+xml" href="/static/img/ico.svg" />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      tailwind.config = { darkMode: 'class' };
-      const theme = localStorage.getItem('theme') || 'dark';
-      if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
+      tailwind.config = { darkMode: "class" };
+      const theme = localStorage.getItem("theme") || "dark";
+      if (
+        theme === "dark" ||
+        (theme === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
       } else {
-        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.remove("dark");
       }
     </script>
     <style>
       /* Light mode zero-refactor protocol overrides */
-      html:not(.dark) body, html:not(.dark) .bg-slate-900, html:not(.dark) .bg-slate-900\/50 { background-color: #f8fafc !important; }
-      html:not(.dark) .bg-slate-800, html:not(.dark) .bg-slate-800\/80 { background-color: #ffffff !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border-color: #e2e8f0; }
-      html:not(.dark) .border-slate-700 { border-color: #e2e8f0 !important; }
-      html:not(.dark) .text-white { color: #0f172a !important; }
-      html:not(.dark) .bg-blue-600, html:not(.dark) .bg-red-400, html:not(.dark) .bg-emerald-400 { color: #ffffff !important; }
-      html:not(.dark) .text-slate-300 { color: #334155 !important; }
-      html:not(.dark) .text-slate-400 { color: #475569 !important; }
-      html:not(.dark) .text-slate-500 { color: #64748b !important; }
-      html:not(.dark) .text-slate-200 { color: #1e293b !important; }
-      html:not(.dark) .hover\:bg-slate-800:hover { background-color: #f1f5f9 !important; }
-      html:not(.dark) .hover\:bg-slate-700:hover { background-color: #e2e8f0 !important; }
-      html:not(.dark) .hover\:bg-slate-700\/30:hover { background-color: #f1f5f9 !important; }
-      html:not(.dark) .bg-slate-700 { background-color: #f1f5f9 !important; border: 1px solid #e2e8f0; }
-      html:not(.dark) .divide-slate-700\/50 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
-      html:not(.dark) .bg-black\/90 { background-color: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(10px); }
-      html:not(.dark) .bg-black\/60 { background-color: rgba(255, 255, 255, 0.8) !important; color: #0f172a !important; }
-      html:not(.dark) #video-container { background-color: #f1f5f9 !important; }
-      html:not(.dark) .bg-blue-900\/50 { background-color: #dbeafe !important; border-color: #bfdbfe !important; }
-      html:not(.dark) .bg-red-900\/50 { background-color: #fee2e2 !important; border-color: #fecaca !important; }
-      html:not(.dark) .border-blue-800 { border-color: #3b82f6 !important; }
-      html:not(.dark) .border-red-800 { border-color: #ef4444 !important; }
-      html:not(.dark) .text-blue-400 { color: #1d4ed8 !important; }
-      html:not(.dark) .text-red-400, html:not(.dark) .text-red-300 { color: #b91c1c !important; }
-      
+      html:not(.dark) body,
+      html:not(.dark) .bg-slate-900,
+      html:not(.dark) .bg-slate-900\/50 {
+        background-color: #f8fafc !important;
+      }
+      html:not(.dark) .bg-slate-800,
+      html:not(.dark) .bg-slate-800\/80 {
+        background-color: #ffffff !important;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border-color: #e2e8f0;
+      }
+      html:not(.dark) .border-slate-700 {
+        border-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .text-white {
+        color: #0f172a !important;
+      }
+      html:not(.dark) .bg-blue-600,
+      html:not(.dark) .bg-red-400,
+      html:not(.dark) .bg-emerald-400 {
+        color: #ffffff !important;
+      }
+      html:not(.dark) .text-slate-300 {
+        color: #334155 !important;
+      }
+      html:not(.dark) .text-slate-400 {
+        color: #475569 !important;
+      }
+      html:not(.dark) .text-slate-500 {
+        color: #64748b !important;
+      }
+      html:not(.dark) .text-slate-200 {
+        color: #1e293b !important;
+      }
+      html:not(.dark) .hover\:bg-slate-800:hover {
+        background-color: #f1f5f9 !important;
+      }
+      html:not(.dark) .hover\:bg-slate-700:hover {
+        background-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .hover\:bg-slate-700\/30:hover {
+        background-color: #f1f5f9 !important;
+      }
+      html:not(.dark) .bg-slate-700 {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0;
+      }
+      html:not(.dark) .divide-slate-700\/50 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .bg-black\/90 {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
+      }
+      html:not(.dark) .bg-black\/60 {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        color: #0f172a !important;
+      }
+      html:not(.dark) #video-container {
+        background-color: #f1f5f9 !important;
+      }
+      html:not(.dark) .bg-blue-900\/50 {
+        background-color: #dbeafe !important;
+        border-color: #bfdbfe !important;
+      }
+      html:not(.dark) .bg-red-900\/50 {
+        background-color: #fee2e2 !important;
+        border-color: #fecaca !important;
+      }
+      html:not(.dark) .border-blue-800 {
+        border-color: #3b82f6 !important;
+      }
+      html:not(.dark) .border-red-800 {
+        border-color: #ef4444 !important;
+      }
+      html:not(.dark) .text-blue-400 {
+        color: #1d4ed8 !important;
+      }
+      html:not(.dark) .text-red-400,
+      html:not(.dark) .text-red-300 {
+        color: #b91c1c !important;
+      }
+
       /* Additional variants for list items */
-      html:not(.dark) .bg-slate-700\/50 { background-color: #f1f5f9 !important; border-color: #e2e8f0 !important; }
-      html:not(.dark) .border-slate-600 { border-color: #e2e8f0 !important; }
-      html:not(.dark) .bg-slate-700:hover { background-color: #e2e8f0 !important; }
-      html:not(.dark) .text-emerald-400 { color: #059669 !important; }
-      html:not(.dark) .bg-emerald-600 { background-color: #059669 !important; color: #ffffff !important; }
-      
+      html:not(.dark) .bg-slate-700\/50 {
+        background-color: #f1f5f9 !important;
+        border-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .border-slate-600 {
+        border-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .bg-slate-700:hover {
+        background-color: #e2e8f0 !important;
+      }
+      html:not(.dark) .text-emerald-400 {
+        color: #059669 !important;
+      }
+      html:not(.dark) .bg-emerald-600 {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+      }
     </style>
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -58,7 +132,7 @@
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body
-    class="bg-slate-900 text-slate-200 h-screen w-screen overflow-hidden font-sans"
+    class="bg-slate-900 text-slate-200 h-screen w-screen font-sans"
     hx-ext="response-targets"
   >
     <div
@@ -69,7 +143,6 @@
     <main id="main-content" class="h-full w-full">
       {% block content %}{% endblock %}
     </main>
-
 
     <script src="/static/js/app.js"></script>
     {% block scripts %}{% endblock %}
