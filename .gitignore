@@ -25,3 +25,4 @@ videos/
 # Environment variables
 .env
 .env.local
+DEPLOY_VPS_UBUNTU.md
