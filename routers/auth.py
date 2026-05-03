@@ -20,7 +20,12 @@ async def login_for_access_token(
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
     
-    if not user or not verify_password(form_data.password, user.password_hash):
+    try:
+        valid_password = verify_password(form_data.password, user.password_hash) if user else False
+    except ValueError:
+        valid_password = False
+
+    if not user or not valid_password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
