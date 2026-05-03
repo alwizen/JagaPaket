@@ -17,9 +17,9 @@
                     <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
                             <th class="px-6 py-4">ID</th>
-                            <th class="px-6 py-4">Device Name</th>
-                            <th class="px-6 py-4">Location</th>
-                            <th class="px-6 py-4">Created At</th>
+                            <th class="px-6 py-4">Nama Perangkat</th>
+                            <th class="px-6 py-4">Lokasi</th>
+                            <th class="px-6 py-4">Dibuat Pada</th>
                             <th class="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -32,15 +32,15 @@
 
         <!-- Right Create Form -->
         <div class="flex-[1] bg-slate-800 border border-slate-700 rounded-xl p-6 h-fit shadow-xl">
-            <h3 id="form-title" class="text-lg font-bold text-white mb-4">Add Device</h3>
+            <h3 id="form-title" class="text-lg font-bold text-white mb-4">Tambah Perangkats</h3>
             <form onsubmit="saveDevice(event)" id="device-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-slate-400 mb-1">Device Name</label>
+                    <label class="block text-sm text-slate-400 mb-1">Nama Perangkat</label>
                     <input type="text" id="add-device-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
                     <p class="text-xs text-slate-500 mt-1">E.g. PackStation-A1</p>
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-400 mb-1">Location Details</label>
+                    <label class="block text-sm text-slate-400 mb-1">Lokasi</label>
                     <input type="text" id="add-location" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
                 </div>
                 <div class="flex flex-col gap-2 mt-4">

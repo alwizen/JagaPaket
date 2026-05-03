@@ -221,7 +221,7 @@ function startManualRecording() {
         handleBarcodeScanned(val);
         inputEL.value = ""; // clear after starting
     } else {
-        App.showToast("Silakan isi nomor invoice terlebih dahulu", "warning");
+        App.showToast("Silakan isi No. Pesanan terlebih dahulu", "warning");
     }
 }
 

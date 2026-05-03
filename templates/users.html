@@ -17,7 +17,7 @@
                     <thead class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-slate-700">
                         <tr>
                             <th class="px-6 py-4">ID</th>
-                            <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Nama</th>
                             <th class="px-6 py-4">Username</th>
                             <th class="px-6 py-4">Role</th>
                             <!-- <th class="px-6 py-4">Device ID</th> -->
@@ -36,7 +36,7 @@
             <h3 id="form-title" class="text-lg font-bold text-white mb-4">Add User</h3>
             <form onsubmit="saveUser(event)" id="user-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-slate-400 mb-1">Name</label>
+                    <label class="block text-sm text-slate-400 mb-1">Nama</label>
                     <input type="text" id="add-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
                 </div>
                 <div>
@@ -55,12 +55,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-400 mb-1">Assigned Device ID (Optional)</label>
+                    <label class="block text-sm text-slate-400 mb-1">No. Device (Opsional)</label>
                     <input type="number" id="add-device" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white outline-none focus:border-blue-500">
                 </div>
                 <div class="flex flex-col gap-2 mt-4">
                     <button type="submit" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition-colors">
-                        Create User
+                        Buat User
                     </button>
                     <button type="button" onclick="cancelEdit()" id="cancel-btn" class="w-full hidden bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 rounded transition-colors">
                         Batal

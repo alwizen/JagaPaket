@@ -1,9 +1,4 @@
-<aside id="admin-sidebar" class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col absolute inset-y-0 left-0 z-50 transform transition-transform duration-300 -translate-x-full sm:relative sm:translate-x-0 h-full shadow-2xl">
-    <div class="p-4 border-b border-slate-700 flex justify-end items-center bg-slate-800 md:hidden">
-        <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-1">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-    </div>
+<aside id="admin-sidebar" class="w-64 bg-slate-900 border-r border-slate-700 flex flex-col h-full shadow-2xl relative z-40">
     <nav class="flex-1 p-4 space-y-2">
         <a href="/dashboard" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -11,7 +6,7 @@
         </a>
         <a href="/history_page" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Recording History
+            Riwayat Rekaman
         </a>
         <a href="/videos_page" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -26,7 +21,7 @@
             Perangkat
         </a>
         <div class="h-px bg-slate-700 my-4"></div>
-        <a href="/recorder" class="flex items-center gap-3 px-4 py-3 rounded-lg text-emerald-400 hover:bg-emerald-900/30 transition-colors">
+        <a href="/recorder" class="admin-nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-emerald-400 hover:bg-emerald-900/30 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg>
@@ -45,25 +40,9 @@
         const links = document.querySelectorAll('.admin-nav-link');
         links.forEach(l => {
             if(l.getAttribute('href') === path) {
-                l.classList.remove('text-slate-400', 'hover:bg-slate-800');
+                l.classList.remove('text-slate-400', 'hover:bg-slate-800', 'text-emerald-400', 'hover:bg-emerald-900/30');
                 l.classList.add('bg-blue-600', 'font-medium', 'text-white', 'shadow');
             }
         });
     });
-
-    function toggleSidebar() {
-        const sb = document.getElementById('admin-sidebar');
-        if(!sb) return;
-        if (sb.classList.contains('-translate-x-full')) {
-            sb.classList.remove('-translate-x-full');
-            sb.classList.replace('sm:translate-x-0', 'translate-x-0'); 
-        } else {
-            sb.classList.add('-translate-x-full');
-            if(sb.classList.contains('sm:translate-x-0')) {
-                sb.classList.remove('sm:translate-x-0');
-            } else {
-                sb.classList.add('sm:translate-x-0');
-            }
-        }
-    }
 </script>
