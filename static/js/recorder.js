@@ -115,11 +115,12 @@ async function uploadVideo(blob, invoice, startTime, duration) {
         });
         
         if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `Error ${response.status}: ${response.statusText}`);
         }
     } catch(err) {
-        console.error(err);
-        App.showToast("Error uploading video. Check connection.", "error");
+        console.error("Upload Error:", err);
+        App.showToast(`Upload Gagal: ${err.message}`, "error");
     }
 }
 

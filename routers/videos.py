@@ -1,5 +1,6 @@
 import os
 import aiofiles
+import logging
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import FileResponse
@@ -14,6 +15,7 @@ from schemas import VideoResponse
 from dependencies import require_super_admin, require_packing_staff, get_current_user
 
 router = APIRouter(prefix="/videos", tags=["videos"])
+logger = logging.getLogger(__name__)
 
 @router.post("/upload", response_model=VideoResponse)
 async def upload_video(
