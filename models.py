@@ -9,7 +9,7 @@ class User(Base):
     name = Column(String(255), nullable=False)
     username = Column(String(255), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
-    role = Column(String(50), nullable=False, default="PACKING_STAFF")
+    role = Column(String(50), nullable=False, default="USER")
     device_id = Column(Integer, ForeignKey("devices.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 

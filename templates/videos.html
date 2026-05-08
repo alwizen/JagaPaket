@@ -124,7 +124,10 @@
         } else {
             // Hide operator filter for staff since they can only see their own videos anyway
             const opFilter = document.getElementById('filter-operator');
-            if(opFilter) opFilter.parentElement.style.display = 'none';
+            if(opFilter) {
+                opFilter.parentElement.style.display = 'none';
+                opFilter.parentElement.parentElement.classList.remove('md:grid-cols-2');
+            }
         }
         
         // Handle global search parameter if present
@@ -250,7 +253,7 @@
                 <td class="px-6 py-5 font-mono text-blue-400 font-bold text-base group-hover:text-blue-300 transition-colors">${v.invoice_number}</td>
                 <td class="px-6 py-5">
                     <div class="text-slate-200 font-medium">${dateStr}</div>
-                    <div class="text-xs text-slate-500">Operator: ${v.operator_name || '-'}</div>
+                    <div class="text-xs text-slate-500 operator-col">Operator: ${v.operator_name || '-'}</div>
                 </td>
                 <td class="px-6 py-5 text-right">
                     <div class="flex justify-end gap-2">
@@ -264,6 +267,10 @@
             `;
             tbody.appendChild(tr);
         });
+
+        if (localStorage.getItem('user_role') !== 'SUPER_ADMIN') {
+            document.querySelectorAll('.operator-col').forEach(el => el.style.display = 'none');
+        }
     }
 
     function playVideo(id, invoice) {

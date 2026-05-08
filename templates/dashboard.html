@@ -54,7 +54,7 @@
             window.location.href = '/';
             return;
         }
-        if(role !== 'SUPER_ADMIN') {
+        if(role !== 'SUPER_ADMIN' && role !== 'USER') {
             window.location.href = '/recorder';
             return;
         }

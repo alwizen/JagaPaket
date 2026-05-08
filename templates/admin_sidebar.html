@@ -47,5 +47,13 @@
                 l.classList.add('bg-blue-600', 'font-medium', 'text-white', 'shadow');
             }
         });
+        
+        const role = localStorage.getItem('user_role');
+        if (role !== 'SUPER_ADMIN') {
+            const usersLink = document.querySelector('a[href="/users_page"]');
+            const devicesLink = document.querySelector('a[href="/devices_page"]');
+            if (usersLink) usersLink.style.display = 'none';
+            if (devicesLink) devicesLink.style.display = 'none';
+        }
     });
 </script>

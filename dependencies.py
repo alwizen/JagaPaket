@@ -54,8 +54,8 @@ async def require_super_admin(current_user: User = Depends(get_current_user)):
         )
     return current_user
 
-async def require_packing_staff(current_user: User = Depends(get_current_user)):
-    if current_user.role not in ["PACKING_STAFF", "SUPER_ADMIN"]:
+async def require_user(current_user: User = Depends(get_current_user)):
+    if current_user.role not in ["USER", "SUPER_ADMIN"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Operation not permitted",

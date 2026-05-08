@@ -23,7 +23,7 @@
                         <tr>
                             <th class="px-6 py-4 font-bold">No. Pesanan</th>
                             <th class="px-6 py-4 font-bold">Tanggal</th>
-                            <th class="px-6 py-4 font-bold">Operator</th>
+                            <th class="px-6 py-4 font-bold operator-col">Operator</th>
                             <th class="px-6 py-4 font-bold">Durasi</th>
                             <th class="px-6 py-4 text-right font-bold">Actions</th>
                         </tr>
@@ -147,7 +147,7 @@
             tr.innerHTML = `
                 <td class="px-6 py-4 font-mono text-blue-400 font-bold">${v.invoice_number}</td>
                 <td class="px-6 py-4">${dateStr}</td>
-                <td class="px-6 py-4">${v.operator_name || '-'}</td>
+                <td class="px-6 py-4 operator-col">${v.operator_name || '-'}</td>
                 <td class="px-6 py-4">${formatDuration(v.duration)}</td>
                 <td class="px-6 py-4 text-right">
                     <button onclick="playVideo(${v.id}, '${v.invoice_number}')" class="text-emerald-400 hover:text-emerald-300 font-medium text-sm mr-3">Preview</button>
@@ -159,6 +159,10 @@
             `;
             tbody.appendChild(tr);
         });
+        
+        if (localStorage.getItem('user_role') !== 'SUPER_ADMIN') {
+            document.querySelectorAll('.operator-col').forEach(el => el.style.display = 'none');
+        }
     }
 
     function playVideo(id, invoice) {

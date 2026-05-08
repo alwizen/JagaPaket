@@ -35,9 +35,9 @@
 </svg>
 
                     </div>
-                    <div>
+                    <div class="hidden md:block">
                         <h3 class="text-white font-bold text-lg">Scan Barcode</h3>
-                        <p class="text-slate-400 text-sm hidden sm:block">Arahkan scanner atau input manual</p>
+                        <p class="text-slate-400 text-sm">Arahkan scanner atau input manual</p>
                     </div>
                 </div>
 
@@ -52,14 +52,14 @@
                     </button>
                 </div>
                 
-                <div class="flex items-center gap-4 opacity-50 transition-opacity" id="stop-instruction">
+                <button onclick="stopRecording()" class="flex items-center gap-4 opacity-50 transition-opacity hover:opacity-80 active:scale-95 cursor-pointer text-left" id="stop-instruction">
                     <div class="bg-red-900/50 px-4 py-2 rounded-lg border border-red-800 shadow-inner">
-                        <span class="text-red-400 font-mono font-bold text-xl">F8</span>
+                        <span class="text-red-400 font-mono font-bold text-xl">STOP (F8)</span>
                     </div>
-                    <div>
-                        <h3 class="text-red-300 font-bold text-lg">Tekan untuk Stop</h3>
+                    <div class="hidden md:block">
+                        <h3 class="text-red-300 font-bold text-lg">Tekan untuk Berhenti</h3>
                     </div>
-                </div>
+                </button>
             </div>
         </div>
         

@@ -175,16 +175,20 @@ function drawOverlay() {
     animationFrameId = requestAnimationFrame(drawOverlay);
 }
 
+function stopRecording() {
+    if (isRecording && mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+    } else {
+        App.showToast("Not currently recording.", "warning");
+    }
+}
+
 // Keyboard input for F8 and Barcode Capture
 document.addEventListener('keydown', (e) => {
     // 119 is F8 keycode, check by key directly
     if (e.key === "F8") {
         e.preventDefault();
-        if (isRecording && mediaRecorder && mediaRecorder.state === "recording") {
-            mediaRecorder.stop();
-        } else {
-            App.showToast("Not currently recording.", "warning");
-        }
+        stopRecording();
         return;
     }
     

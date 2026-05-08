@@ -12,7 +12,7 @@ from config import settings
 from database import get_db
 from models import PackingVideo, User
 from schemas import VideoResponse
-from dependencies import require_super_admin, require_packing_staff, get_current_user
+from dependencies import require_super_admin, require_user, get_current_user
 
 router = APIRouter(prefix="/videos", tags=["videos"])
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ async def upload_video(
     duration: int = Form(0),
     video: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_packing_staff)
+    current_user: User = Depends(require_user)
 ):
     try:
         date_str = datetime.utcnow().strftime("%Y-%m-%d")
@@ -90,17 +90,31 @@ async def upload_video(
         )
 
 @router.get("/stats")
-async def get_video_stats(db: AsyncSession = Depends(get_db)):
+async def get_video_stats(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     now = datetime.utcnow()
     # Handle simple truncation to start of day
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_start = today_start - timedelta(days=today_start.weekday())
     month_start = today_start.replace(day=1)
 
-    r_today = await db.execute(select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= today_start))
-    r_week = await db.execute(select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= week_start))
-    r_month = await db.execute(select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= month_start))
-    r_total = await db.execute(select(func.count(PackingVideo.id)))
+    stmt_today = select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= today_start)
+    stmt_week = select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= week_start)
+    stmt_month = select(func.count(PackingVideo.id)).where(PackingVideo.created_at >= month_start)
+    stmt_total = select(func.count(PackingVideo.id))
+    
+    if current_user.role == "USER":
+        stmt_today = stmt_today.where(PackingVideo.operator_id == current_user.id)
+        stmt_week = stmt_week.where(PackingVideo.operator_id == current_user.id)
+        stmt_month = stmt_month.where(PackingVideo.operator_id == current_user.id)
+        stmt_total = stmt_total.where(PackingVideo.operator_id == current_user.id)
+
+    r_today = await db.execute(stmt_today)
+    r_week = await db.execute(stmt_week)
+    r_month = await db.execute(stmt_month)
+    r_total = await db.execute(stmt_total)
     
     return {
         "today": r_today.scalar() or 0,
@@ -125,7 +139,7 @@ async def list_videos(
     stmt = select(PackingVideo, User.name.label('operator_name')).outerjoin(User, PackingVideo.operator_id == User.id)
     count_stmt = select(func.count(PackingVideo.id))
     
-    if current_user.role == "PACKING_STAFF":
+    if current_user.role == "USER":
         stmt = stmt.where(PackingVideo.operator_id == current_user.id)
         count_stmt = count_stmt.where(PackingVideo.operator_id == current_user.id)
     else:
@@ -184,7 +198,7 @@ async def list_videos(
 @router.get("/play/{video_id}")
 async def play_video(video_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     stmt = select(PackingVideo).where(PackingVideo.id == video_id)
-    if current_user.role == "PACKING_STAFF":
+    if current_user.role == "USER":
         stmt = stmt.where(PackingVideo.operator_id == current_user.id)
         
     result = await db.execute(stmt)
